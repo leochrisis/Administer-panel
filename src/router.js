@@ -3,25 +3,53 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-function load (component) {
-  return () => System.import(`components/${component}.vue`)
-}
+const load = type => name => () =>
+  System.import(`./${type}/${name}.vue`)
+
+const layout = load('layouts')
+const page = load('pages')
 
 export default new VueRouter({
-  /*
-   * NOTE! VueRouter "history" mode DOESN'T works for Cordova builds,
-   * it is only to be used only for websites.
-   *
-   * If you decide to go with "history" mode, please also open /config/index.js
-   * and set "build.publicPath" to something other than an empty string.
-   * Example: '/' instead of current ''
-   *
-   * If switching back to default "hash" mode, don't forget to set the
-   * build publicPath back to '' so Cordova builds work again.
-   */
 
   routes: [
-    { path: '/', component: load('Index') }, // Default
-    { path: '*', component: load('Error404') } // Not found
+    {
+      path: '/',
+      component: page('home')
+    },
+    {
+      path: '/panel',
+      component: layout('base-layout'),
+      children: [
+        {
+          name: 'Dashboard',
+          path: '',
+          component: page('dashboard')
+        },
+
+        {
+          name: 'Users',
+          path: 'users',
+          component: page('user-table')
+        },
+
+        {
+          name: 'Organizations',
+          path: 'organizations',
+          component: page('organization-table')
+        },
+
+        {
+          name: 'Projects',
+          path: 'projects',
+          component: page('project-table')
+        }
+      ]
+    },
+     // Not found
+    {
+      name: 'Error404',
+      path: '*',
+      component: load('Error404')
+    }
   ]
 })
