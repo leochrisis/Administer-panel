@@ -21,7 +21,8 @@
     "roboto-fontface": "^0.7.0",
     "sass-loader": "^6.0.6",
     "vue": "^2.3.0",
-    "vue-router": "^2.0.0"
+    "vue-router": "^2.0.0",
+    "vuex": "^2.3.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",

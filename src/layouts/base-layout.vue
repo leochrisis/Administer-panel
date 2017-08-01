@@ -10,7 +10,7 @@
 
       <div ref="user-porpove-target" class="primary">
         <gravatar
-          :email="admin.email"
+          :email="loggedUser.email"
           :size="32"
           :circle="true"
         >
@@ -36,7 +36,7 @@
               class="item item-link"
               @click="$refs.userPopover.close()"
             >
-              <div class="item-content">Logout</div>
+              <div class="item-content" v-link="'/logout'">Logout</div>
             </div>
           </div>
         </q-popover>
@@ -90,19 +90,18 @@
 
 <script>
   import Gravatar from 'components/gravatar.vue'
+  import {mapGetters} from 'vuex'
 
   export default {
     name: 'BaseLayout',
 
     components: {Gravatar},
 
-    data: () => ({
-      admin: {
-        email: 'leonardo.chfc@gmail.com',
-        name: 'leochrisis',
-        display_name: '@leochrisis'
-      },
+    computed: {
+      ...mapGetters(['loggedUser'])
+    },
 
+    data: () => ({
       organizations: [],
       users: []
     })

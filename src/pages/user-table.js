@@ -30,7 +30,7 @@ export default{
       },
       responsive: true,
       pagination: {
-        rowsPerPage: 10,
+        rowsPerPage: 15,
         options: [5, 10, 15, 30, 50]
       },
       selection: 'single',

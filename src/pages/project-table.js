@@ -128,7 +128,7 @@ export default{
         })
         this.form = Object.assign({}, this.projects[this.selectedProjectIndex])
 
-        axios.get(`/organizations/${this.form.id}/members/`)
+        axios.get(`/projects/${this.form.id}/members/`)
           .then(this.handleMembers)
           .catch(this.handleMembersFail)
       }

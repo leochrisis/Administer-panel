@@ -85,6 +85,7 @@ export default {
     closeModal () {
       this.errors.name = []
       this.errors.display_name = []
+      this.memberToAdd = ''
     },
 
     searchMembers (query, done) {
@@ -127,16 +128,15 @@ export default {
         .catch(this.handleMemberAddFail)
     },
 
-    handleMemberAdded(response) {
+    handleMemberAdded (response) {
       this.loading = false
       Loading.hide()
       this.memberToAdd = ''
 
       Toast.create.positive('Member added')
-      this.members.push(response.data)
     },
 
-    handleMemberAddFail(error) {
+    handleMemberAddFail (error) {
       this.loading = false
       Loading.hide()
 
@@ -144,7 +144,7 @@ export default {
     },
 
     /* Role Update */
-    updateRole(member, role) {
+    updateRole (member, role) {
       if (this.loading) {
         return
       }
@@ -167,7 +167,6 @@ export default {
       Loading.hide()
 
       Toast.create.positive('Role updated')
-      Object.assign(member, response.data)
     },
 
     handleRoleUpdateFail (error) {
@@ -199,7 +198,7 @@ export default {
       Loading.hide()
 
       Toast.create.positive('Member removed')
-      this.members = this.members.filter(member => member.user.id != userId)
+      this.members = this.members.filter(member => member.user.id !== userId)
     },
 
     handleMemberRemoveFail (error) {

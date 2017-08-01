@@ -5,16 +5,16 @@
 </template>
 
 <script>
-
+  import {mapGetters} from 'vuex'
   export default{
     name: 'Dashboard',
 
+    computed: {
+      ...mapGetters(['loggedUser'])
+    },
+
     data: () => ({
-      admin: {
-        email: 'leonardo.chfc@gmail.com',
-        name: 'leochrisis',
-        display_name: '@leochrisis'
-      }
+
     })
   }
 </script>
