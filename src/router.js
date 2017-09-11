@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from 'store'
 
 Vue.use(VueRouter)
 
@@ -13,9 +14,17 @@ export default new VueRouter({
 
   routes: [
     {
+      name: 'Login',
       path: '/',
-      component: page('home')
+      component: page('auth/login')
     },
+
+    {
+      name: 'Logout',
+      path: '/logout',
+      component: page('auth/logout')
+    },
+
     {
       path: '/panel',
       component: layout('base-layout'),
@@ -23,25 +32,29 @@ export default new VueRouter({
         {
           name: 'Dashboard',
           path: '',
-          component: page('dashboard')
+          component: page('dashboard'),
+          beforeEnter: requireAuth
         },
 
         {
           name: 'Users',
           path: 'users',
-          component: page('user-table')
+          component: page('user-table'),
+          beforeEnter: requireAuth
         },
 
         {
           name: 'Organizations',
           path: 'organizations',
-          component: page('organization-table')
+          component: page('organization-table'),
+          beforeEnter: requireAuth
         },
 
         {
           name: 'Projects',
           path: 'projects',
-          component: page('project-table')
+          component: page('project-table'),
+          beforeEnter: requireAuth
         }
       ]
     },
@@ -53,3 +66,13 @@ export default new VueRouter({
     }
   ]
 })
+
+function requireAuth (to, from, next) {
+  if (store.getters.isAuthenticated) {
+    return next()
+  }
+
+  return next({
+    name: 'Login'
+  })
+}

@@ -6,7 +6,9 @@ module.exports = {
     quasar: path.resolve(__dirname, '../node_modules/quasar-framework/'),
     src: path.resolve(__dirname, '../src'),
     assets: path.resolve(__dirname, '../src/assets'),
-    components: path.resolve(__dirname, '../src/components')
+    components: path.resolve(__dirname, '../src/components'),
+    utils: path.resolve(__dirname, '../src/utils'),
+    store: path.resolve(__dirname, '../src/store')
   },
 
   // Progress Bar Webpack plugin format
@@ -30,9 +32,9 @@ module.exports = {
     env: require('./dev.env'),
     cssSourceMap: true,
     // auto open browser or not
-    openBrowser: true,
+    openBrowser: false,
     publicPath: '/',
-    port: 8080,
+    port: 8000,
 
     // If for example you are using Quasar Play
     // to generate a QR code then on each dev (re)compilation
@@ -45,15 +47,15 @@ module.exports = {
     // Also see /build/script.dev.js and search for "proxy api requests"
     // https://github.com/chimurai/http-proxy-middleware
     proxyTable: {
-      '/api': {
-        target: 'http://localhost:4000'
-      },
+    //   '/api': {
+    //     target: 'http://api:4000'
+    //   },
 
-      '/socket': {
-        target: 'http://localhost:4000',
-        ws: true
-      }
-    }
+    //   '/socket': {
+    //     target: 'http://api:4000',
+    //     ws: true
+    //   }
+   }
   }
 }
 
@@ -71,3 +73,4 @@ module.exports = {
       }
     }
  */
+

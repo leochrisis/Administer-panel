@@ -29,8 +29,8 @@
               <div class="item multiple-lines">
                 <div class="item-content">
                   <div class="floating-label">
-                    <input required class="full-width" v-model="form.display_name">
-                    <label>Display Name</label>
+                    <input required class="full-width" v-model="form.organization">
+                    <label>Organization</label>
                   </div>
                 </div>
               </div>
@@ -46,19 +46,6 @@
                   </q-numeric>
                 </div>
               </div>
-
-              <hr>
-
-              <label class="item two-lines">
-                <div class="item-content has-secondary">
-                  <div>Is this project private?</div>
-                  <div>Visible only to members</div>
-                </div>
-
-                <div class="item-secondary">
-                  <q-toggle v-model="form.private"></q-toggle>
-                </div>
-              </label>
 
               <hr>
 
@@ -86,17 +73,17 @@
 
             <div class="list">
               <div v-for="(member, index) in members" :key="`org-member-${member.user_id}`" class="item two-lines">
-                <gravatar :email="member.user.email" :circle="true" :size="48" class="item-primary"></gravatar>
+                <gravatar :email="member.email" :circle="true" :size="48" class="item-primary"></gravatar>
 
                 <div class="item-content has-secondary">
-                  <div>{{member.user.display_name}}</div>
+                  <div>{{member.name}}</div>
 
                   <template>
-                    <div v-if="member.role === 'po'">
+                    <div v-if="isPo(member)">
                       <i>person</i> Product Owner
                     </div>
 
-                    <div v-else-if="member.role === 'manager'">
+                    <div v-else-if="isManager(member)">
                       <i>person_outline</i> Manager
                     </div>
 
@@ -110,10 +97,10 @@
                   <i slot="target">
                     more_vert
                     <q-popover ref="memberPopover">
-                      <div class="list" @click="$refs.memberPopover[index].close()">
-                        <div v-if="hasPo === 0">
+                      <div class="list" @click="$refs.popover[index].close()">
+                        <div>
                           <div
-                            v-if="member.role !== 'po'"
+                            v-if="!isPo(member) && !isManager(member)"
                             class="item item-link"
                             @click="updateRole(member, 'po')"
                           >
@@ -121,15 +108,25 @@
                           </div>
                         </div>
 
-                        <div
-                          v-if="member.role !== 'team'"
-                          class="item item-link"
-                          @click="updateRole(member, 'team')"
-                        >
-                          <div class="item-content">Grant Team Member</div>
+                        <div>
+                          <div
+                            v-if="!isPo(member) && !isManager(member)"
+                            class="item item-link"
+                            @click="updateRole(member, 'manager')"
+                          >
+                            <div class="item-content">Grant Manager</div>
+                          </div>
                         </div>
 
-                        <div class="item item-link" @click="removeMember(member, index)">
+                        <div
+                          v-if="isPo(member)"
+                          class="item item-link"
+                          @click="revokeRole(member, 'po')"
+                        >
+                          <div class="item-content">Revoke PO</div>
+                        </div>
+
+                        <div class="item item-link" @click="removeMember(member)">
                           <div class="item-content">Remove</div>
                         </div>
                       </div>

@@ -14,7 +14,7 @@ export default {
   data: () => ({
     loading: false,
     errors: {
-      display_name: [],
+      name: [],
       email: []
     }
   }),
@@ -41,17 +41,17 @@ export default {
         delay: 0
       })
 
-      const {display_name, bio, contact, location, url} = this.form
+      const {name, email} = this.form
 
-      axios.put(`/users/${this.user.id}`, {
-        data: {display_name, bio, contact, location, url}
+      axios.put(`admin/users/${this.user.id}`, {
+        data: {name, email}
       })
         .then(this.handleEdited)
         .catch(this.handleEditFail)
     },
 
     handleEdited (response) {
-      Toast.create.positive('Updated project successfully')
+      Toast.create.positive('Updated user successfully')
 
       this.loading = false
       Loading.hide()
@@ -65,14 +65,14 @@ export default {
 
       const errors = error.response.data.errors
       this.errors = {
-        display_name: errors.display_name || [],
+        display_name: errors.name || [],
         email: errors.email || []
       }
       this.loading = false
     },
 
     closeModal () {
-      this.errors.display_name = []
+      this.errors.name = []
       this.errors.email = []
     }
   }

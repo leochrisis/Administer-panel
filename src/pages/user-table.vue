@@ -6,31 +6,11 @@
       :columns="columns"
       @refresh="refresh"
     >
-      <template slot="col-username" scope="cell">
-        <span>{{cell.data}}</span>
-      </template>
-
-      <template slot="col-display_name" scope="cell">
+      <template slot="col-name" scope="cell">
         <span>{{cell.data}}</span>
       </template>
 
       <template slot="col-email" scope="cell">
-        <span>{{cell.data}}</span>
-      </template>
-
-      <template slot="col-contact" scope="cell">
-        <span>{{cell.data}}</span>
-      </template>
-
-      <template slot="col-bio" scope="cell">
-        <span>{{cell.data}}</span>
-      </template>
-
-      <template slot="col-location" scope="cell">
-        <span>{{cell.data}}</span>
-      </template>
-
-      <template slot="col-url" scope="cell">
         <span>{{cell.data}}</span>
       </template>
 
@@ -53,7 +33,7 @@
 
     <q-modal
       ref="userEditModal"
-      :content-css="{minWidth: '80vw', minHeight: '80vh'}"
+      :content-css="{minWidth: '60vw', minHeight: '60vh'}"
     >
       <user-edit-modal
         :modal="$refs.userEditModal"
@@ -63,14 +43,6 @@
       >
       </user-edit-modal>
     </q-modal>
-
-    <button
-      class="primary circular absolute-bottom-left"
-      style="margin-left: 10px; margin-bottom: 10px;"
-      @click="askUserInformations"
-    >
-      <i>person_add</i>
-    </button>
   </div>
 </template>
 

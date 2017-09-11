@@ -11,16 +11,25 @@
         <span>{{cell.data}}</span>
       </template>
 
-      <template slot="col-display_name" scope="cell">
-        <span>{{cell.data}}</span>
+      <template slot="col-organization" scope="cell">
+        <span v-if="cell.data">
+          <span>{{cell.data}}</span>
+        </span>
+        <span v-else>Not specified</span>
       </template>
 
-      <template slot="col-private" scope="cell">
-        <span v-if="cell.data === true" class="label text-white bg-primary">
-          Yes
-        </span>
-        <span v-else class="label text-white bg-negative">No</span>
+       <template slot="col-manager_id" scope="cell">
+        <div v-for="user in users">
+          <span v-if="user.id === cell.data">{{user.name}}</span>
+        </div>
       </template>
+
+      <template slot="col-po_id" scope="cell">
+        <div v-for="user in users">
+          <span v-if="user.id === cell.data">{{user.name}}</span>
+        </div>
+      </template>
+
 
       <template slot="selection" scope="props">
         <button
@@ -43,6 +52,7 @@
   <q-modal
     ref="projectEditModal"
     :content-css="{minWidth: '80vw', minHeight: '80vh'}"
+    @close="refresh"
   >
     <project-edit-modal
       :modal="$refs.projectEditModal"

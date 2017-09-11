@@ -1,4 +1,5 @@
 import {Dialog, Loading, Toast, Utils} from 'quasar'
+import {mapGetters} from 'vuex'
 import userEditModal from './modal/user-edit.vue'
 import axios from 'utils/axios'
 
@@ -9,11 +10,6 @@ export default{
 
   data: () => ({
     loading: false,
-    admin: {
-      email: 'leonardo.chfc@gmail.com',
-      name: 'leochrisis',
-      display_name: '@leochrisis'
-    },
     users: [],
     edition: false,
     form: {},
@@ -30,7 +26,7 @@ export default{
       },
       responsive: true,
       pagination: {
-        rowsPerPage: 10,
+        rowsPerPage: 15,
         options: [5, 10, 15, 30, 50]
       },
       selection: 'single',
@@ -52,19 +48,8 @@ export default{
     columns: [
       {
         label: 'Name',
-        field: 'username',
+        field: 'name',
         width: '40px',
-        filter: true,
-        sort: true,
-        format (value) {
-          return new Date(value).toLocaleString()
-        }
-      },
-
-      {
-        label: 'Display name',
-        field: 'display_name',
-        width: '50px',
         filter: true,
         sort: true,
         format (value) {
@@ -81,46 +66,6 @@ export default{
         format (value) {
           return new Date(value).toLocaleString()
         }
-      },
-
-      {
-        label: 'Contact',
-        field: 'contact',
-        width: '50px',
-        filter: true,
-        format (value) {
-          return new Date(value).toLocaleString()
-        }
-      },
-
-      {
-        label: 'Bio',
-        field: 'bio',
-        width: '60px',
-        filter: true,
-        format (value) {
-          return new Date(value).toLocaleString()
-        }
-      },
-
-      {
-        label: 'Location',
-        field: 'location',
-        width: '60px',
-        filter: true,
-        format (value) {
-          return new Date(value).toLocaleString()
-        }
-      },
-
-      {
-        label: 'Url',
-        field: 'url',
-        width: '40px',
-        filter: true,
-        format (value) {
-          return new Date(value).toLocaleString()
-        }
       }
     ],
 
@@ -129,6 +74,10 @@ export default{
     bodyHeightProp: 'maxHeight',
     bodyHeight: 500
   }),
+
+  computed: {
+    ...mapGetters(['loggedUser'])
+  },
 
   created () {
     Loading.show({
@@ -160,60 +109,6 @@ export default{
         error.response.data.errors.name
           .map(msg => 'Name ' + msg)
           .join('\n'))
-    },
-
-    askUserInformations () {
-      Dialog.create({
-        title: 'Creating user',
-        form: {
-          username: {
-            type: 'textbox',
-            label: 'Username',
-            model: ''
-          },
-          password: {
-            type: 'password',
-            label: 'Password',
-            model: ''
-          },
-          password_confirmation: {
-            type: 'password',
-            label: 'Confirm Password',
-            model: ''
-          },
-          email: {
-            type: 'textbox',
-            label: 'Email',
-            model: ''
-          }
-        },
-        buttons: [
-          'Cancel',
-          {
-            label: 'Create',
-            classes: 'positive',
-            handler: this.createUser
-          }
-        ]
-      })
-    },
-    createUser ({username, password, password_confirmation, email}) {
-      Loading.show({
-        message: 'Creating account',
-        delay: 0
-      })
-      axios.post('/users', {data: {username, password, password_confirmation, email}})
-        .then(this.handleUserCreated)
-        .catch(this.handleUserCreationFail)
-    },
-    handleUserCreated (response) {
-      Loading.hide()
-      this.refresh()
-      Toast.create.positive('Created user successfully')
-    },
-    handleUserCreationFail (error) {
-      Loading.hide()
-      Toast.create.negative('Check user informations and try again')
     },
 
     edit (props) {

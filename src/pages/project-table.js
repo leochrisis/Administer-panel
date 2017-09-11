@@ -3,28 +3,23 @@ import projectEditModal from './modal/project-edit.vue'
 import axios from 'utils/axios'
 
 export default{
-  name: 'UserTable',
+  name: 'ProjectTable',
 
   components: {projectEditModal},
 
   data: () => ({
     loading: false,
-    admin: {
-      email: 'leonardo.chfc@gmail.com',
-      name: 'leochrisis',
-      display_name: '@leochrisis'
-    },
     selectedProjectIndex: null,
+    users: [],
     projects: [],
     members: [],
-    organizations: [],
     edition: false,
     form: {},
     config: {
       rowHeight: '50px',
       title: 'Projects',
       noHeader: false,
-      refresh: true,
+      refresh: false,
       columnPicker: true,
       leftStickyColumns: 0,
       rightStickyColumns: 0,
@@ -62,17 +57,25 @@ export default{
       },
 
       {
-        label: 'Display_name',
-        field: 'display_name',
+        label: 'organization',
+        field: 'organization',
+        width: '40px',
+        sort: true
+      },
+
+      {
+        label: 'Manager',
+        field: 'manager_id',
         width: '40px',
         filter: true,
         sort: true
       },
 
       {
-        label: 'Private',
-        field: 'private',
-        width: '60px',
+        label: 'Product Owner',
+        field: 'po_id',
+        width: '40px',
+        filter: true,
         sort: true
       }
     ],
@@ -84,9 +87,9 @@ export default{
   }),
 
   created () {
-    axios.get('/organizations')
-    .then(this.handleOrganizationsLoaded)
-    .catch(this.handleOrganizationsLoadError)
+    axios.get('/users')
+    .then(this.handleUsersLoaded)
+    .catch(this.handleUsersLoadError)
 
     axios.get('/projects')
     .then(this.handleProjectsLoaded)
@@ -97,18 +100,18 @@ export default{
 
   methods: {
     refresh () {
-      axios.get('/projects')
+      axios.get('admin/projects')
       .then(this.handleProjectsLoaded)
       .catch(function (error) {
         console.log(error)
       })
     },
 
-    handleOrganizationsLoaded (response) {
-      this.organizations = response.data
+    handleUsersLoaded (response) {
+      this.users = response.data
     },
 
-    handleOrganizationsLoadError (error) {
+    handleUsersLoadError (error) {
       console.log(error)
     },
 
@@ -128,7 +131,7 @@ export default{
         })
         this.form = Object.assign({}, this.projects[this.selectedProjectIndex])
 
-        axios.get(`/organizations/${this.form.id}/members/`)
+        axios.get(`admin/projects/${this.form.id}/members/`)
           .then(this.handleMembers)
           .catch(this.handleMembersFail)
       }
@@ -178,7 +181,7 @@ export default{
       })
       this.loading = true
 
-      axios.delete(`/projects/${this.projects[this.selectedProjectIndex].id}`)
+      axios.delete(`admin/projects/${this.projects[this.selectedProjectIndex].id}`)
         .then(this.handleDeleted)
         .catch(this.handleDeleteFail)
     },
@@ -196,6 +199,10 @@ export default{
 
       this.loading = false
       Loading.hide()
+    },
+
+    closeModal () {
+      this.refresh()
     }
   },
 

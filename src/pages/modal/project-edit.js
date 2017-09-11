@@ -25,9 +25,7 @@ export default {
     },
 
     hasPo () {
-      return this.members
-        .filter(member => member.role === 'po')
-        .length
+      return !!this.project.po_id
     }
   },
 
@@ -35,8 +33,7 @@ export default {
     loading: false,
     memberToAdd: '',
     errors: {
-      name: [],
-      display_name: []
+      name: []
     }
   }),
 
@@ -52,10 +49,10 @@ export default {
         message: 'Updating'
       })
 
-      const {name, display_name, votation_time, private: isPrivate} = this.form
+      const {name, organization, votation_time} = this.form
 
-      axios.put(`/projects/${this.project.id}`, {
-        data: {name, display_name, votation_time, private: isPrivate}
+      axios.put(`admin/projects/${this.project.id}`, {
+        data: {name, organization, votation_time}
       })
         .then(this.handleEdited)
         .catch(this.handleEditFail)
@@ -77,31 +74,31 @@ export default {
 
       const errors = error.response.data.errors
       this.errors = {
-        name: errors.name || [],
-        display_name: errors.display_name || []
+        name: errors.name || []
       }
       this.loading = false
     },
+
     closeModal () {
       this.errors.name = []
-      this.errors.display_name = []
+      this.memberToAdd = ''
     },
 
     searchMembers (query, done) {
-      axios.get(`/organizations/${this.project.organization_id}/members`)
+      axios.get(`/users`)
         .then(({data}) =>
           data
-          .filter(({user}) =>
-            !this.members.some(member => member.user.id === user.id)
+          .filter((user) =>
+            !this.members.some(member => member.id === user.id)
           )
-          .filter(({user}) =>
-            user.username.indexOf(query) !== -1 ||
-            user.display_name.indexOf(query) !== -1
+          .filter((user) =>
+            user.name.indexOf(query) !== -1 ||
+            user.email.indexOf(query) !== -1
           )
-          .map(({user}) => ({
-            value: user.username,
-            label: user.display_name,
-            secondLabel: user.username,
+          .map((user) => ({
+            value: user.id,
+            label: user.name,
+            secondLabel: user.email,
             stamp: user.id
           }))
         )
@@ -110,103 +107,76 @@ export default {
     },
 
     addMember ({stamp: id}) {
-      if (this.loading) {
-        return
-      }
-
-      this.loading = true
       Loading.show({
         message: 'Adding member',
         delay: 0
       })
 
-      axios.post(`/projects/${this.project.id}/members/`, {
+      axios.post(`admin/projects/${this.project.id}/members/`, {
         data: {user_id: id}
       })
         .then(this.handleMemberAdded)
         .catch(this.handleMemberAddFail)
     },
 
-    handleMemberAdded(response) {
-      this.loading = false
+    handleMemberAdded ({data}) {
       Loading.hide()
       this.memberToAdd = ''
-
       Toast.create.positive('Member added')
-      this.members.push(response.data)
+      this.members.push(data)
     },
 
-    handleMemberAddFail(error) {
-      this.loading = false
+    handleMemberAddFail () {
       Loading.hide()
-
       Toast.create.negative('Failed to add member')
     },
 
     /* Role Update */
-    updateRole(member, role) {
-      if (this.loading) {
-        return
-      }
+    updateRole (member, role) {
+      const data = {[`${role}_id`]: member.id}
 
-      this.loading = true
-      Loading.show({
-        message: 'Updating role',
-        delay: 0
-      })
-
-      axios.put(`/projects/${this.project.id}/members/${member.user.id}`, {
-        data: {role}
-      })
-        .then((response) => this.handleRoleUpdated(member, response))
-        .catch(this.handleRoleUpdateFail)
+      axios.put(`admin/projects/${this.project.id}`, {data})
+        .then(() => Toast.create.positive('Role updated'))
+        .catch(() => Toast.create.negative('Failed to update role'))
     },
 
-    handleRoleUpdated (member, response) {
-      this.loading = false
-      Loading.hide()
+    revokeRole (member, role) {
+      const data = {[`${role}_id`]: null}
 
-      Toast.create.positive('Role updated')
-      Object.assign(member, response.data)
-    },
-
-    handleRoleUpdateFail (error) {
-      this.loading = false
-      Loading.hide()
-
-      Toast.create.negative('Failed to update role')
+      axios.put(`admin/projects/${this.project.id}`, data)
+        .then(() => Toast.create.positive('Role updated'))
+        .catch(() => Toast.create.negative('Failed to update role'))
     },
 
     /* Member Remove */
-    removeMember (member, index) {
-      if (this.loading) {
-        return
-      }
-
-      this.loading = true
+    removeMember (member) {
       Loading.show({
         message: 'Removing member',
         delay: 0
       })
 
-      axios.delete(`/projects/${this.project.id}/members/${member.user.id}`)
-        .then(() => this.handleMemberRemoved(member.user.id))
+      axios.delete(`admin/projects/${this.project.id}/members/${member.id}`)
+        .then(() => this.handleMemberRemoved(member.id))
         .catch(this.handleMemberRemoveFail)
     },
 
     handleMemberRemoved (userId) {
-      this.loading = false
       Loading.hide()
-
       Toast.create.positive('Member removed')
-      this.members = this.members.filter(member => member.user.id != userId)
+      this.members = this.members.filter(member => member.id !== userId)
     },
 
-    handleMemberRemoveFail (error) {
-      this.loading = false
+    handleMemberRemoveFail () {
       Loading.hide()
-
       Toast.create.negative('Failed to remove member')
+    },
+
+    isPo (member) {
+      return member.id === this.project.po_id
+    },
+
+    isManager (member) {
+      return member.id === this.project.manager_id
     }
   }
 }

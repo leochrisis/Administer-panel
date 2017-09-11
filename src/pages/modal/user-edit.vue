@@ -16,11 +16,11 @@
           <div class="item multiple-lines">
             <div class="item-content">
               <div class="stacked-label">
-                <input required autofocus class="full-width" v-model="form.display_name">
-                <label>Username</label>
+                <input required autofocus class="full-width" v-model="form.name">
+                <label>Name</label>
               </div>
               <ul>
-                <li v-for="error in errors.display_name" class="text-negative">
+                <li v-for="error in errors.name" class="text-negative">
                   {{error}}
                 </li>
               </ul>
@@ -40,42 +40,6 @@
                   {{error}}
                 </li>
               </ul>
-            </div>
-          </div>
-
-          <div class="item multiple-lines">
-            <div class="item-content">
-              <div class="stacked-label">
-                <input class="full-width" v-model="form.bio">
-                <label>Bio</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="item multiple-lines">
-            <div class="item-content">
-              <div class="stacked-label">
-                <input class="full-width" v-model="form.contact">
-                <label>Contact</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="item multiple-lines">
-            <div class="item-content">
-              <div class="stacked-label">
-                <input class="full-width" v-model="form.location">
-                <label>Locate</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="item multiple-lines">
-            <div class="item-content">
-              <div class="stacked-label">
-                <input class="full-width" v-model="form.url">
-                <label>Url</label>
-              </div>
             </div>
           </div>
 
